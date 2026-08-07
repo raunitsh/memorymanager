@@ -2,3 +2,4 @@
 *.pdb
 *.ilk
 .vscode
+build

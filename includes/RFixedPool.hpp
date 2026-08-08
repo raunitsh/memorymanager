@@ -25,6 +25,7 @@ public:
                 RFixedPool                  (void *pMemory, size_t pTotalSize, size_t pChunkSize);
                 RFixedPool                  (size_t pCapacity);
                 ~RFixedPool                 ();
+                RFixedPool                  (const RFixedPool&) = delete;
 
     void *      Allocate                    ();
     void        Free                        (void *pBlock);
@@ -33,7 +34,11 @@ public:
     size_t      uCapacity;
     size_t      uChunkSize                  = CHUNK_SIZE;
 
-    private:
+    RFixedPool& operator=                   (const RFixedPool&) = delete;
+
+    bool        uSuccess                    = false;
+
+private:
 
     void        PrivateInitMemory           ();
 

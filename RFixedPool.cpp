@@ -77,6 +77,14 @@ RFixedPool::Free (void *pBlock)
 void 
 RFixedPool::PrivateInitMemory () 
 {
+	if (!vMemory || (uCapacity % uChunkSize != 0))
+	{
+		vNextFree = 
+		vMemEnd =
+		vMemory = nullptr;
+		return;
+	}
+
 	vMemEnd = MOVE_BY(vMemory, uCapacity);
 
 	Block *curr = vMemory;
@@ -94,6 +102,7 @@ RFixedPool::PrivateInitMemory ()
 	}
 
 	vNextFree = MOVE_BACK_BY (vMemEnd, uChunkSize);
+	uSuccess = true;
 }
 
 bool 

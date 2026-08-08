@@ -1,25 +1,29 @@
 #include "./RFixedPool.hpp"
 
+#define             TOTAL_CAPACITY      1024*1024
+#define             POOL_CAPACITY       (TOTAL_CAPACITY/4)
+
 class RMemoryManager {
 
-    public:
+public:
 
-                RMemoryManager      (size_t pCapacity = 10240);
-                ~RMemoryManager     ();
+                    RMemoryManager      ();
+                    ~RMemoryManager     ();
+                    RMemoryManager      (const RMemoryManager&) = delete;
 
+    void*           Allocate            (size_t pSize);
+    void            Free                (void* pBlock);
 
-    void*       Allocate            (size_t pSize);
-    void        Free                (void* pBlock);
+    RMemoryManager& operator=           (const RMemoryManager&) = delete;
 
-    size_t      uCapacity;
+    size_t          uCapacity;
 
-    private:
+private:
 
-    void*       vMemory;
+    void*           vMemory;
 
-    RFixedPool  pool16;
-    RFixedPool  pool32;
-    RFixedPool  pool64;
-    RFixedPool  pool128;
-    RFixedPool  pool256;
+    RFixedPool      pool16;
+    RFixedPool      pool32;
+    RFixedPool      pool64;
+    RFixedPool      pool128;
 };

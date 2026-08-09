@@ -10,14 +10,19 @@ RMemoryManager::RMemoryManager ()
     : 
     uCapacity (TOTAL_CAPACITY),
     vMemory   (malloc (uCapacity)),      
-    pool512   (GetOffset(vMemory, 0 * POOL_CAPACITY), POOL_CAPACITY, 512),
-    pool1024  (GetOffset(vMemory, 1 * POOL_CAPACITY), POOL_CAPACITY, 1024),
-    pool2048  (GetOffset(vMemory, 2 * POOL_CAPACITY), POOL_CAPACITY, 2048),
-    pool4096  (GetOffset(vMemory, 3 * POOL_CAPACITY), POOL_CAPACITY, 4096),
-    pool8192  (GetOffset(vMemory, 4 * POOL_CAPACITY), POOL_CAPACITY, 8192),
-    pool16384 (GetOffset(vMemory, 5 * POOL_CAPACITY), POOL_CAPACITY, 16384),
-    pool32768 (GetOffset(vMemory, 6 * POOL_CAPACITY), POOL_CAPACITY, 32768),
-    pool65536 (GetOffset(vMemory, 7 * POOL_CAPACITY), POOL_CAPACITY, 65536)
+    pool16    (GetOffset(vMemory, 0 * SLICE_SIZE),  2 * SLICE_SIZE, 16),
+    pool32    (GetOffset(vMemory, 2 * SLICE_SIZE),  2 * SLICE_SIZE, 32),
+    pool64    (GetOffset(vMemory, 4 * SLICE_SIZE),  2 * SLICE_SIZE, 64),
+    pool128   (GetOffset(vMemory, 6 * SLICE_SIZE),  1 * SLICE_SIZE, 128),
+    pool256   (GetOffset(vMemory, 7 * SLICE_SIZE),  1 * SLICE_SIZE, 256),
+    pool512   (GetOffset(vMemory, 8 * SLICE_SIZE),  1 * SLICE_SIZE, 512),
+    pool1024  (GetOffset(vMemory, 9 * SLICE_SIZE),  1 * SLICE_SIZE, 1024),
+    pool2048  (GetOffset(vMemory, 10 * SLICE_SIZE), 1 * SLICE_SIZE, 2048),
+    pool4096  (GetOffset(vMemory, 11 * SLICE_SIZE), 1 * SLICE_SIZE, 4096),
+    pool8192  (GetOffset(vMemory, 12 * SLICE_SIZE), 1 * SLICE_SIZE, 8192),
+    pool16384 (GetOffset(vMemory, 13 * SLICE_SIZE), 1 * SLICE_SIZE, 16384),
+    pool32768 (GetOffset(vMemory, 14 * SLICE_SIZE), 1 * SLICE_SIZE, 32768),
+    pool65536 (GetOffset(vMemory, 15 * SLICE_SIZE), 1 * SLICE_SIZE, 65536)
 {
 
 }
@@ -34,7 +39,12 @@ RMemoryManager::~RMemoryManager ()
 void*
 RMemoryManager::Allocate (size_t pSize)
 {
-    if      (pSize <= 512)   return pool512.Allocate();
+    if      (pSize <= 16)    return pool16.Allocate();
+    else if (pSize <= 32)    return pool32.Allocate();
+    else if (pSize <= 64)    return pool64.Allocate();
+    else if (pSize <= 128)   return pool128.Allocate();
+    else if (pSize <= 256)   return pool256.Allocate();
+    else if (pSize <= 512)   return pool512.Allocate();
     else if (pSize <= 1024)  return pool1024.Allocate();
     else if (pSize <= 2048)  return pool2048.Allocate();
     else if (pSize <= 4096)  return pool4096.Allocate();
@@ -51,7 +61,12 @@ RMemoryManager::Free (void* pBlock)
 {
     if (!pBlock) return;
     
-    if      (pool512.ContainsPtr(pBlock))   pool512.Free(pBlock);
+    if      (pool16.ContainsPtr(pBlock))    pool16.Free(pBlock);
+    else if (pool32.ContainsPtr(pBlock))    pool32.Free(pBlock);
+    else if (pool64.ContainsPtr(pBlock))    pool64.Free(pBlock);
+    else if (pool128.ContainsPtr(pBlock))   pool128.Free(pBlock);
+    else if (pool256.ContainsPtr(pBlock))   pool256.Free(pBlock);
+    else if (pool512.ContainsPtr(pBlock))   pool512.Free(pBlock);
     else if (pool1024.ContainsPtr(pBlock))  pool1024.Free(pBlock);
     else if (pool2048.ContainsPtr(pBlock))  pool2048.Free(pBlock);
     else if (pool4096.ContainsPtr(pBlock))  pool4096.Free(pBlock);
